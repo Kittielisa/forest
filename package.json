@@ -1,0 +1,20 @@
+{
+  "name": "Dark Forest",
+  "version": "0.0.1",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "~4.x.x",
+    "socket.io": "*",
+    "cookie-parser": "*"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jahmed76/dark-forest"
+  }
+}
