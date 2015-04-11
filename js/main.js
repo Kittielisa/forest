@@ -4,7 +4,7 @@ var stry=0;
 var crdts=0;
 var firstTime = true;
 var enemy=false;
-var winner = 0;
+var winner = {};
 /*
   The main class is DarkForest. It contains all the visual elements and game logic
   For reference : http://www.smashingmagazine.com/2012/10/19/design-your-own-mobile-game/
@@ -188,14 +188,23 @@ var DarkForest = {
     },
 
     // this is where we draw all the entities
-    render: function() {
+   render: function() {
 
        var i;
 
-      DarkForest.Draw.rect(0, 0, DarkForest.width, DarkForest.height, '#534C4D');
-      DarkForest.Draw.text('Score:' + DarkForest.score.score, 5, 30, 12, '#fff');
-      DarkForest.Draw.text('Killed:' + DarkForest.score.killed, 80, 30, 12, '#fff');
-      DarkForest.Draw.text('Online:' + DarkForest.score.totalOnline, 150, 30, 12, '#fff');
+      DarkForest.Draw.rect(0, 0, DarkForest.width, DarkForest.height, 'rgba(32, 31, 46, 1)');
+      
+      //DarkForest.Draw.text('Score:' + DarkForest.score.score, 10, 30, 15, '#fff');
+      DarkForest.Draw.text('Score:',5, 30, 15, '#fff');
+      DarkForest.Draw.text(DarkForest.score.score,60, 30, 15, '#FF1259');
+      
+      //DarkForest.Draw.text('Killed:' + DarkForest.score.killed, 100, 30, 15, '#fff');
+      DarkForest.Draw.text('Killed:', 100, 30, 15, '#fff');
+      DarkForest.Draw.text(DarkForest.score.killed, 163, 30, 15, '#FF1259');
+      
+      //DarkForest.Draw.text('Online:' + DarkForest.score.totalOnline, 200, 30, 15, '#fff');
+      DarkForest.Draw.text('Online:', 193, 30, 15, '#fff');
+      DarkForest.Draw.text(DarkForest.score.totalOnline, 255, 30, 15, '#FF1259');
 
        // cycle through all entities and render to canvas
        for (i = 0; i < DarkForest.entities.length; i += 1) {
@@ -348,20 +357,20 @@ DarkForest.TechnologyExplosion = function(){
     this.update = function(){
         this.time++;
         //when the timer reaches 100, remove the popup
-        if(this.time>100){
+        if(this.time>500){
           this.remove=true;
         }
       
       
     }
     this.render = function() {
-      //Draw the header
-      DarkForest.Draw.rect(5,DarkForest.height/4,DarkForest.width-10,30,'#312A2A');
-      DarkForest.Draw.text("Technology Explosion",DarkForest.width/2-90,DarkForest.height/4+15,16,'red')
+      
+     DarkForest.Draw.rect(0,DarkForest.height/4,DarkForest.width,50,'rgba(29, 33, 36, 0.8)');
+      DarkForest.Draw.text("Technology Explosion",DarkForest.width/2-90,DarkForest.height/4+15,16,'#FF1275')
       //Draw the body
-      DarkForest.Draw.rect(5,DarkForest.height/4+30,DarkForest.width-10,85,'#5A5959');
+      DarkForest.Draw.rect(0,DarkForest.height/4+50,DarkForest.width,85,'rgba(6, 7, 8, 0.8)');
       DarkForest.Draw.text("You just experienced a technology",10,DarkForest.height/4+50,14,'white')
-      DarkForest.Draw.text("explosion, which gives you 5",10,DarkForest.height/4+70,14,'white')
+      DarkForest.Draw.text("explosion, which gives you 50",10,DarkForest.height/4+70,14,'white')
       DarkForest.Draw.text("bonus score.",10,DarkForest.height/4+90,14,'white')
     };
 }
@@ -378,11 +387,12 @@ DarkForest.CloseUserFound = function(){
   }
   this.render = function() {
     //Draw the header
+   //Draw the header
     var self = this;
-    DarkForest.Draw.rect(5,DarkForest.height/4,DarkForest.width-10,30,'#312A2A');
-    DarkForest.Draw.text("War Alert",DarkForest.width/2-40,DarkForest.height/4+20,20,'red')
+    DarkForest.Draw.rect(0,DarkForest.height/4,DarkForest.width,30,'rgba(29, 33, 36, 0.8)');
+    DarkForest.Draw.text("War Alert",DarkForest.width/2-40,DarkForest.height/4+20,20,'#FF1275')
     //Draw the body
-    DarkForest.Draw.rect(5,DarkForest.height/4+30,DarkForest.width-10,115,'#5A5959');
+    DarkForest.Draw.rect(0,DarkForest.height/4+30,DarkForest.width,115,'rgba(6, 7, 8, 0.8)');
     DarkForest.Draw.text("You are in a war with civilization #"+currentOpponents.number,10,DarkForest.height/4+50,14,'white')
     DarkForest.Draw.text("please choose your next move.",10,DarkForest.height/4+70,14,'white')
     //Create the buttons
@@ -1516,7 +1526,7 @@ DarkForest.Winner = function(){
     DarkForest.Draw.text("Winner",DarkForest.width/2-90,DarkForest.height/4+15,16,'red')
     //Draw the body
     DarkForest.Draw.rect(5,DarkForest.height/4+30,DarkForest.width-10,85,'#5A5959');
-    DarkForest.Draw.text("Civilization "+winner+" is the strongest",10,DarkForest.height/4+50,14,'white')
+    DarkForest.Draw.text("Civilization #"+winner.number+" is the strongest",10,DarkForest.height/4+50,14,'white')
     DarkForest.Draw.text("civilization in the universe",10,DarkForest.height/4+70,14,'white')
 
   };
@@ -1571,7 +1581,7 @@ function distance(lat1,lon1,lat2,lon2) {
     ; 
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
   var d = R * c; // Distance in km
-  return d; //distance in m
+  return d*1000; //distance in m
 }
 
 function deg2rad(deg) {
@@ -1604,8 +1614,9 @@ getLocation = function(){
   savePosition = function(position){
     var lat =  position.coords.latitude;
     var lon =  position.coords.longitude;
-
-    if(distance(lat , lon , 40.692206, -73.963042)<16000000000000000000){
+    var dist = distance(lat , lon , 40.692206, -73.963042)
+    console.log(dist);
+    if(dist<1600000000000000000000000){
           socket = io.connect('/');
 
         //receive your random id from server
@@ -1624,8 +1635,8 @@ getLocation = function(){
         //if a user leavers
         socket.on('user disconnected', function(data){
           console.log("user disconnected");
-          //User.userLeft();
-          //DarkForest.score.totalOnline--;
+          User.userLeft();
+          DarkForest.score.totalOnline--;
         });
 
           //periodically receive score updates
@@ -1646,9 +1657,13 @@ getLocation = function(){
           })
           //if the user loses a fight, display loss popup
           socket.on('loss' , function(data){
-             enemy=false;
-              DarkForest.Loss.active = true;
-              DarkForest.score.totalOnline--;
+          	DarkForest.score.totalOnline--;
+
+          	if(data.id==User.id){
+          		enemy=false;
+              	DarkForest.Loss.active = true;
+          	}
+             
           })
           //if the user wins a fight, display win popup
 
@@ -1658,7 +1673,6 @@ getLocation = function(){
               DarkForest.score.score+=data.score;
               DarkForest.score.killed++;
               DarkForest.Win.active = true;
-              DarkForest.score.totalOnline--;
 
           });
           //if both user choose peace, show peace popup
@@ -1668,15 +1682,18 @@ getLocation = function(){
           })
           //if the user receives a technology explosion bonus, show the popu notifying him about the bonus
           socket.on('tech explosion' , function(data){
-              User.increaseScore(5);
-              DarkForest.score.score+=5;
+              User.increaseScore(50);
+              DarkForest.score.score+=50;
               DarkForest.TechnologyExplosion.active = true;
           })
 
           socket.on('winner' , function(data){
             DarkForest.Winner.active = true;
+            console.log(data);
             winner.number = data.number;
             winner.id = data.id
+
+            socket.emit('disconnect');
 
           })
           

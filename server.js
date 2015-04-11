@@ -8,7 +8,11 @@ var server_port = process.env.PORT || 3000
 var server_ip_address = process.env.IP || '127.0.0.1'
 
 app.use(cookieParser())
-
+//if a request comes, get teh required file from the path and return as response
+app.get('/' , function(req , res , next){
+    var fileName = req.path;
+    res.sendFile(__dirname +'/index.html');
+})
 //if a request comes, get teh required file from the path and return as response
 app.get('/*.*' , function(req , res , next){
     var fileName = req.path;
@@ -61,14 +65,17 @@ io.on('connection' , function(socket){
 		var disconnect_user = getUserById(uniqueId);
 		var disconnect_socket = getSocketById(uniqueId);
 
+		if(getSocketById(uniqueId).status=='open'){
+			--totalPlayers;
+			io.emit('user disconnected');
+
+		}
+
 		var index = users.indexOf(disconnect_user);
 		users.splice(index , 1);
 		index = sockets.indexOf(disconnect_socket);
 		sockets.splice(index,1);
 
-		--totalPlayers;
-
-		io.emit('user disconnected');
 		socket.disconnect();
 	})
 
@@ -277,20 +284,19 @@ function decideWinner(pair){
 		var caller_socket = getSocketById(caller_id);
 		var opp_socket = getSocketById(opponent_id);
 
-		caller_socket.con.emit('loss');
+		io.emit('loss',{id:caller_id});
 		opp_socket.con.emit('win' , {score:caller.score});
 
 		opponent.score+=caller.score;
 
 		sockets[sockets.indexOf(caller_socket)].status = 'dead'
 		//caller_socket.con.disconnect();
-		if(totalPlayers==2){
+		if(totalPlayers<=2){
 			io.emit('winner' , {number:opponent.number , id:opponent.id});
 			console.log('winner')
 			
-			for(var i=0;i<sockets.length;i++)
-				sockets[i].con.disconnect();
-
+			//for(var i=0;i<sockets.length;i++)
+			//	sockets[i].con.disconnect();
 
 			totalPlayers = 0;
 			playerCount = 0;
@@ -303,7 +309,7 @@ function decideWinner(pair){
 		var caller_socket = getSocketById(caller_id);
 		var opp_socket = getSocketById(opponent_id);
 
-		opp_socket.con.emit('loss');
+		io.emit('loss' , {id:opponent_id});
 		//opp_socket.con.disconnect();
 		sockets[sockets.indexOf(opp_socket)].status = 'dead'
 		caller_socket.con.emit('win' , {score:caller.score});
@@ -314,8 +320,8 @@ function decideWinner(pair){
 		if(totalPlayers<=2){
 			io.emit('winner' , {number:caller.number , id:caller.id});
 			console.log('winner')
-			for(var i=0;i<sockets.length;i++)
-				sockets[i].con.disconnect();
+			//for(var i=0;i<sockets.length;i++)
+			//	sockets[i].con.disconnect();
 
 			totalPlayers = 0;
 			playerCount = 0;
@@ -360,7 +366,7 @@ function chooseTechExplosion()
 		return;
 
 	var winner = Math.floor(Math.random()*(users.length));
-	users[winner].score+=5;
+	users[winner].score+=50;
     var winner_socket = getSocketById(users[winner].id);
     if(winner_socket.status=='open')
 		winner_socket.con.emit('tech explosion');
