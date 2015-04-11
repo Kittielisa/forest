@@ -52,7 +52,7 @@ var DarkForest = {
 
         // we're ready to resize
         DarkForest.resize();
-        DarkForest.ExitFullScreen.active = true;
+       // DarkForest.ExitFullScreen.active = true;
         DarkForest.loop();
      
         

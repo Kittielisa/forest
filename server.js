@@ -81,7 +81,7 @@ io.on('connection' , function(socket){
 
 	//fires when a user location change event is detected
 	socket.on('location change' , function(data){
-		console.log("location change received")
+		//console.log("location change received")
 
 		if(firstTime)
 			return;
@@ -210,6 +210,7 @@ io.on('connection' , function(socket){
 			}
 			else if(pair.user2_status=="fight"){
 				decideWinner(pair);
+				--totalPlayers;
 				//remove the pair from deciding pairs
 				var index = deciding_pairs.indexOf(pair);
 				deciding_pairs.splice(index , 1);
@@ -237,6 +238,7 @@ io.on('connection' , function(socket){
 			}
 			else if(pair.user1_status=="fight"){
 				decideWinner(pair);
+				--totalPlayers;
 				//remove the pair from deciding pairs
 				var index = deciding_pairs.indexOf(pair);
 				deciding_pairs.splice(index , 1);
@@ -280,6 +282,7 @@ function decideWinner(pair){
 	var opponent = pair.user2;
 	var caller_id = pair.user1.id;
 	var opponent_id = pair.user2.id;
+	console.log(totalPlayers)
 	if(caller.score<opponent.score){
 		var caller_socket = getSocketById(caller_id);
 		var opp_socket = getSocketById(opponent_id);
