@@ -1616,7 +1616,7 @@ getLocation = function(){
     var lon =  position.coords.longitude;
     var dist = distance(lat , lon , 40.692206, -73.963042)
     console.log(dist);
-    if(dist<1600000000000000000000000){
+    if(dist<160){
           socket = io.connect('/');
 
         //receive your random id from server
